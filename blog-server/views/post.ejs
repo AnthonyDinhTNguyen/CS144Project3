@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= test %></title>
+    <title>Welcome</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= test %></h1>
-    <p>Welcome to the <%= test %></p>
+    <h1><%- title %></h1>
+    <p>Username: <%= username %></p>
+    <p>ID: <%= postid %></p>
+    <p>Body: <%- body %></p>
+    <p>Created: <%= created %></p>
+    <p>Modified: <%= modified %></p>
   </body>
 </html>

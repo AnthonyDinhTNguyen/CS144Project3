@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+<%for(let z = 0; z<results.length;z++){%>
+    <h1><%- results[z].title %></h1>
+    <p>Username: <%= results[z].username %></p>
+    <p>ID: <%= results[z].postid %></p>
+    <p>Body: <%- results[z].body %></p>
+    <p>Created: <%= results[z].created %></p>
+    <p>Modified: <%= results[z].modified %></p>
+<%}%>
+  </body>
+</html>
