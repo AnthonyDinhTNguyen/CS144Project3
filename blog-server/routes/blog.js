@@ -2,24 +2,26 @@ let express = require('express');
 const assert = require('assert');
 let router = express.Router();
 let commonmark = require('commonmark');
-var MongoClient = require('mongodb').MongoClient
+let sharedDB = require('./sharedDB');
+// var MongoClient = require('mongodb').MongoClient
 
-var URL = 'mongodb://localhost:27017'
+// var URL = 'mongodb://localhost:27017'
 
-let db;
-MongoClient.connect(URL,(err, client)=> {
-    if (err) return
-    db = client.db("BlogServer");
-    // var coll = db.collection('Posts');
-    // coll.insert({test: "1"}, function (findErr, result) {
-    //     if (findErr) throw findErr;
-    //     client.close();
-    //   });
-});
+// let db;
+// MongoClient.connect(URL,(err, client)=> {
+//     if (err) return
+//     db = client.db("BlogServer");
+//     // var coll = db.collection('Posts');
+//     // coll.insert({test: "1"}, function (findErr, result) {
+//     //     if (findErr) throw findErr;
+//     //     client.close();
+//     //   });
+// });
 
 function postCallBack(request,response,next){
     let user = request.params.username;
     let postID = parseInt(request.params.postid);
+    let db = sharedDB.getSharedDB();
     var coll = db.collection('Posts');
     let queryParams = {
         username: user,
@@ -64,26 +66,29 @@ function handlerFunction(results,request,response){
     if(results.length<=0){
         response.sendStatus(404);
     }
-    results.sort(comparator);
-    let display = results.splice(0,5);
-    let largestID = display[display.length-1].postid;
-    let newSkipID = largestID+1;
-    let url = "/blog/"+request.params.username+"/"+newSkipID;
-    let r = new commonmark.Parser();
-    let w = new commonmark.HtmlRenderer();
-    for(let i = 0; i< display.length;i++){
-        let newTitle = w.render(r.parse(display[i].title));
-        let newBody = w.render(r.parse(display[i].body));
-        display[i].title = newTitle;
-        display[i].body = newBody;
+    else{
+        results.sort(comparator);
+        let display = results.splice(0,5);
+        let largestID = display[display.length-1].postid;
+        let newSkipID = largestID+1;
+        let url = "/blog/"+request.params.username+"/"+newSkipID;
+        let r = new commonmark.Parser();
+        let w = new commonmark.HtmlRenderer();
+        for(let i = 0; i< display.length;i++){
+            let newTitle = w.render(r.parse(display[i].title));
+            let newBody = w.render(r.parse(display[i].body));
+            display[i].title = newTitle;
+            display[i].body = newBody;
+        }
+        response.status(200);
+        response.render('postsList',{
+        results: display,
+        nextUrl: url       
+        })
     }
-    response.status(200);
-    response.render('postsList',{
-    results: display,
-    nextUrl: url       
-    })
 }
 function listPostsCallBack(request,response,next){
+    let db = sharedDB.getSharedDB();
     var coll = db.collection('Posts');
     let start=0;
     if(request.query.start){
