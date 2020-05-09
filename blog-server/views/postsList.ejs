@@ -13,5 +13,8 @@
     <p>Created: <%= results[z].created %></p>
     <p>Modified: <%= results[z].modified %></p>
 <%}%>
+<%if(nextButton){%>
+  <a id = "next" href ="<%=nextUrl%>" >Next</a>
+  <%}%>
   </body>
 </html>

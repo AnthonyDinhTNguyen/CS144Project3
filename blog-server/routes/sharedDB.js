@@ -3,7 +3,7 @@ var MongoClient = require('mongodb').MongoClient
 let db;
 function startSharedDB(){
     var URL = 'mongodb://localhost:27017'
-    MongoClient.connect(URL,(err, client)=> {
+    MongoClient.connect(URL, { useUnifiedTopology: true }, (err, client)=> {
         if (err) return
         db = client.db("BlogServer");
     });

@@ -68,6 +68,10 @@ function handlerFunction(results,request,response){
     }
     else{
         results.sort(comparator);
+        let morePosts = false;
+        if(results.length >5){
+            morePosts = true;
+        }
         let display = results.splice(0,5);
         let largestID = display[display.length-1].postid;
         let newSkipID = largestID+1;
@@ -83,7 +87,8 @@ function handlerFunction(results,request,response){
         response.status(200);
         response.render('postsList',{
         results: display,
-        nextUrl: url       
+        nextUrl: url,
+        nextButton: morePosts       
         })
     }
 }
@@ -103,8 +108,6 @@ function listPostsCallBack(request,response,next){
         response.sendStatus(400);
     }
     coll.find({username:user,postid:{"$gte":start}}).toArray().then(results =>{handlerFunction(results,request,response)}).catch(err=>{response.sendStatus(400)});
-
-
 }
 router.get('/:username/:postid', postCallBack );
 router.get('/:username',listPostsCallBack)
