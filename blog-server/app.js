@@ -9,7 +9,7 @@ var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var apiRouter = require('./routes/api');
 var blogRouter = require('./routes/blog');
-
+var editorRouter = require('./routes/editorCheck');
 var app = express();
 
 sharedDB.startSharedDB();
@@ -21,6 +21,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use('/editor',editorRouter)
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
@@ -28,7 +29,6 @@ app.use('/users', usersRouter);
 app.use('/blog',blogRouter);
 app.use('/api',apiRouter);
 app.use('/login',loginRouter);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
